@@ -733,7 +733,7 @@ class BBoxHeadCLIPInference(BBoxHeadCLIP):
         
         if self.withcalibration:
             frequencies = torch.as_tensor(self.cnum, dtype=torch.float32).view(1, -1).to(cls_score.device)
-            frequencies = 1 / frequencies ** self.gamma
+            frequencies = 1 / (frequencies + 0.000001) ** self.gamma
             scores[:,:-1] = scores[:,:-1] * frequencies / frequencies.mean()
         
         scores = scores ** self.beta * proposal_score[:, None] ** (1-self.beta)

@@ -59,7 +59,8 @@ model = dict(
 
 # dataset settings
 dataset_type = 'CocoDataset'
-data_root = 'data/coco/'
+data_root = '/root/autodl-tmp/datasets/coco/'
+rpl_root = '/root/autodl-tmp/rpl/'
 img_norm_cfg = dict(
     mean=[122.7709383, 116.7460125, 104.09373615], std=[68.5005327, 66.6321579, 70.32316305], to_rgb=True)
 train_pipeline = [
@@ -96,46 +97,47 @@ test_pipeline = [
 
 
 data = dict(
-    samples_per_gpu=2,
+    samples_per_gpu=4,
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
-        ann_file='data/coco/annotations/instances_valminusminival2014.json',
-        img_prefix='data/coco/images/val2014/',
+        ann_file=data_root + 'annotations/instances_train2017.1@5.0.json',
+        img_prefix=data_root + 'train2017/',
         pipeline=train_pipeline,
-        proposal_file='rp_train.pkl',
+        proposal_file= rpl_root + 'cln_coco_rp_train.pkl',
         ),
     val=dict(
         type=dataset_type,
-        ann_file='data/coco/annotations/instances_val2017.json',
-        img_prefix='data/coco/val2017/',
+        ann_file=data_root + 'annotations/instances_val2017.1@17.0.json',
+        img_prefix=data_root + 'val2017/',
         pipeline=test_pipeline,
-        proposal_file='rp_val.pkl'
+        proposal_file=rpl_root + 'cln_coco_rp_val.pkl'
         ),
     test=dict(
         type=dataset_type,
-        ann_file = 'data/coco/annotations/instances_val2017.json',
-        img_prefix = 'data/coco/val2017/',
+        # ann_file=data_root + 'annotations/instances_train2017.1@5.0.json',
+        # img_prefix=data_root + 'train2017/',
+        ann_file=data_root + 'annotations/instances_val2017.1@17.0.json',
+        img_prefix=data_root + 'val2017/',
         pipeline=test_pipeline,
-        proposal_file='rp_val.pkl'
+        proposal_file=rpl_root + 'cln_coco_rp_val.pkl'
         ))
-evaluation = dict(interval=1, metric='bbox')
+evaluation = dict(interval=2, metric='bbox')
 
 # optimizer
-optimizer = dict(type='SGD', lr=0.002, momentum=0.9, weight_decay=0.0001 )
+optimizer = dict(type='SGD', lr=0.0005, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 
 
 # learning policy
-# actual epoch = 3 * 3 = 9
 lr_config = dict(
     policy='step', 
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
-    step=[8, 11])
+    step=[2, 3])
 # runtime settings
 runner = dict(
-    type='EpochBasedRunner', max_epochs=12) 
+    type='EpochBasedRunner', max_epochs=4) 
 
 fp16 = dict(loss_scale=32.)

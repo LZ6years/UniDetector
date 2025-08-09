@@ -33,7 +33,7 @@ model = dict(
         loss_cls=dict(
             type='CrossEntropyLoss', use_sigmoid=True, loss_weight=0.0),
         reg_decoded_bbox=True,
-        loss_bbox=dict(type='IoULoss', linear=True, loss_weight=10.0),
+        loss_bbox=dict(type='IoULoss', linear=True, loss_weight=5.0),
         objectness_type='Centerness',
         loss_objectness=dict(type='L1Loss', loss_weight=1.0),
         ),
@@ -126,15 +126,15 @@ model = dict(
             min_bbox_size=0),
         rcnn=dict(
             score_thr=0.0,
-            #nms=dict(type='nms', iou_threshold=0.7),
-            nms=dict(type='nms', iou_threshold=0.9),
+            nms=dict(type='nms', iou_threshold=0.7),
+            # nms=dict(type='nms', iou_threshold=0.9),
             max_per_img=1500,
             )
     ))
 
 # Dataset
 dataset_type = 'CocoDataset'
-data_root = 'data/coco/'
+data_root = '/root/autodl-tmp/datasets/coco/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
@@ -164,30 +164,30 @@ test_pipeline = [
 ]
 
 data = dict(
-    samples_per_gpu=2,
+    samples_per_gpu=4,
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_valminusminival2014.json',
-        img_prefix=data_root + 'images/val2014/',
+        ann_file=data_root + 'annotations/instances_train2017.1@5.0.json',
+        img_prefix=data_root + 'train2017/',
         pipeline=train_pipeline,
         class_agnostic=True),
     val=dict(
         type=dataset_type,
-        ann_file='data/coco/annotations/instances_val2017.json',
-        img_prefix='data/coco/val2017/',
+        ann_file=data_root + 'annotations/instances_val2017.1@17.0.json',
+        img_prefix=data_root + 'val2017/',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        # ann_file='data/coco/annotations/instances_val2017.json',
-        # img_prefix='data/coco/val2017/',
-        ann_file=data_root + 'annotations/instances_valminusminival2014.json',
-        img_prefix=data_root + 'images/val2014/',
+        # ann_file=data_root + 'annotations/instances_train2017.1@5.0.json',
+        # img_prefix=data_root + 'train2017/',
+        ann_file=data_root + 'annotations/instances_val2017.1@17.0.json',
+        img_prefix=data_root + 'val2017/',
         pipeline=test_pipeline))
 
 evaluation = dict(interval=20, metric='bbox')
-optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
-optimizer_config = dict(grad_clip=None)
+optimizer = dict(type='SGD', lr=0.002, momentum=0.9, weight_decay=0.0001)
+optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
 
 
 lr_config = dict(
@@ -195,8 +195,12 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
-    step=[8, 11])
-total_epochs = 12
+    step=[3, 4])
+# total_epochs = 4
+# runtime settings
+runner = dict(
+    type='EpochBasedRunner', max_epochs=4) 
+
 
 checkpoint_config = dict(interval=1)
 # yapf:disable

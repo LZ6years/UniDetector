@@ -102,7 +102,7 @@ model = dict(
 
 # dataset settings
 dataset_type = 'CocoDataset'
-data_root = 'data/coco/'
+data_root = '/root/autodl-tmp/datasets/coco/'
 img_norm_cfg = dict(
     mean=[122.7709383, 116.7460125, 104.09373615], std=[68.5005327, 66.6321579, 70.32316305], to_rgb=True)
 train_pipeline = [
@@ -137,23 +137,23 @@ data = dict(
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
-        ann_file='data/coco/annotations/instances_valminusminival2014.json',
-        img_prefix='data/coco/images/val2014/',
+        ann_file=data_root + 'annotations/instances_train2017.1@5.0.json',
+        img_prefix=data_root + 'train2017/',
         pipeline=train_pipeline,
         ),
     val=dict(
         type=dataset_type,
-        ann_file='data/coco/annotations/instances_val2017.json',
-        img_prefix='data/coco/val2017/',
+        ann_file=data_root + 'annotations/instances_val2017.1@17.0.json',
+        img_prefix=data_root + 'val2017/',
         pipeline=test_pipeline,
         ),
     test=dict(
         type=dataset_type,
-        ann_file = 'data/coco/annotations/instances_val2017.json',
-        img_prefix = 'data/coco/val2017/',
+        ann_file = data_root + 'annotations/instances_val2017.1@17.0.json',
+        img_prefix = data_root + 'val2017/',
         pipeline=test_pipeline,
         ))
-evaluation = dict(interval=1, metric='bbox')
+evaluation = dict(interval=2, metric='bbox')
 
 # optimizer
 optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001, paramwise_cfg=dict(custom_keys={'backbone': dict(lr_mult=0.1, decay_mult=1.0), 'roi_head':dict(lr_mult=0.1, decay_mult=1.0)  }) )
@@ -170,6 +170,6 @@ lr_config = dict(
     step=[8, 11])
 # runtime settings
 runner = dict(
-    type='EpochBasedRunner', max_epochs=12) 
+    type='EpochBasedRunner', max_epochs=4) 
 
 # fp16 = dict(loss_scale=32.)

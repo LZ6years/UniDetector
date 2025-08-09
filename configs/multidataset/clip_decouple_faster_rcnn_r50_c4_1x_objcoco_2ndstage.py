@@ -29,7 +29,7 @@ model = dict(
             with_cls=False,
             reg_class_agnostic=True,
             zeroshot_path=['./clip_embeddings/coco_clip_a+cname_rn50_manyprompt.npy', './clip_embeddings/objects365_clip_a+cname_rn50_manyprompt.npy'],
-            cat_freq_path=[None, 'data/objects365/annotations/zhiyuan_objv2_train.1@3.5_cat_info.json'],
+            cat_freq_path=[None, '/root/autodl-tmp/datasets/object365/annotations/object365_cat_freq.json'],
             num_classes=365,
             loss_cls=dict(type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),  ###### the loss_cls here is not appicable in training
             loss_bbox=dict(type='L1Loss', loss_weight=1.0))),
@@ -86,7 +86,7 @@ classes_obj365 = ['Person', 'Sneakers', 'Chair', 'Other Shoes', 'Hat', 'Car', 'L
 
 # dataset settings
 dataset_type = 'CocoDataset'
-data_root = 'data/coco/'
+data_root = '/root/autodl-tmp/datasets/coco/'
 img_norm_cfg = dict(
     mean=[122.7709383, 116.7460125, 104.09373615], std=[68.5005327, 66.6321579, 70.32316305], to_rgb=True)
 train_pipeline = [
@@ -130,38 +130,38 @@ data = dict(
         datasets=[
             dict(
                 type=dataset_type,
-                ann_file='data/coco/annotations/instances_valminusminival2014.json',
-                img_prefix='data/coco/images/val2014',
+                ann_file=data_root + 'annotations/instances_train2017.1@5.0.json',
+                img_prefix=data_root + 'train2017/',
                 pipeline=train_pipeline,
-                proposal_file='rp_train_0.pkl',
+                proposal_file='/root/autodl-tmp/rpl/decouple_oidcoco_coco_rp_train.pkl',
                 dataset_id=0),
             dict(
                 type=dataset_type,
-                ann_file='data/objects365/annotations/zhiyuan_objv2_train.1@3.5.json',
-                img_prefix='data/objects365/train/',
+                ann_file='/root/autodl-tmp/datasets/object365/annotations/zhiyuan_objv2_train_patch0-5.1@2.0_cleaned.json',
+                img_prefix='/root/autodl-tmp/datasets/object365',
                 classes=classes_obj365,
                 pipeline=train_pipeline,
-                proposal_file='rp_train_1.pkl',
+                proposal_file='/root/autodl-tmp/rpl/decouple_oidcoco_obj365_rp_train.pkl',
                 dataset_id=1)
             ]),
     val=dict(
         type=dataset_type,
-        ann_file='data/coco/annotations/instances_val2017.json',
-        img_prefix='data/coco/val2017/',
-        proposal_file='rp_val.pkl'
+        ann_file=data_root + 'annotations/instances_val2017.1@17.0.json',
+        img_prefix=data_root + 'val2017/',
+        proposal_file='/root/autodl-tmp/rpl/decouple_oidcoco_coco_rp_val.pkl',
         pipeline=test_pipeline,
         ),
     test=dict(
         type=dataset_type,
-        ann_file = 'data/coco/annotations/instances_val2017.json',
-        img_prefix = 'data/coco/val2017/',
-        proposal_file='rp_val.pkl'
+        ann_file = data_root + 'annotations/instances_val2017.1@17.0.json',
+        img_prefix = data_root + 'val2017/',
+        proposal_file='/root/autodl-tmp/rpl/decouple_oidcoco_coco_rp_val.pkl',
         pipeline=test_pipeline,
         ))
-evaluation = dict(interval=1, metric='bbox')
+evaluation = dict(interval=2, metric='bbox')
 
 # optimizer
-optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001, paramwise_cfg=dict(custom_keys={'backbone': dict(lr_mult=0.1, decay_mult=1.0), 'roi_head':dict(lr_mult=0.1, decay_mult=1.0)  }) )
+optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001, paramwise_cfg=dict(custom_keys={'backbone': dict(lr_mult=0.1, decay_mult=1.0), 'roi_head':dict(lr_mult=0.1, decay_mult=1.0)  }) )
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 
 
@@ -172,9 +172,9 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
-    step=[8, 11])
+    step=[3, 4])
 # runtime settings
 runner = dict(
-    type='EpochBasedRunner', max_epochs=12) 
+    type='EpochBasedRunner', max_epochs=4) 
 
 # fp16 = dict(loss_scale=32.)

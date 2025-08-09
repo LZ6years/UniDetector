@@ -23,7 +23,7 @@ model = dict(
             beta=0.3,
             withcalibration=True,
             gamma=0.6,
-            resultfile='raw_lvis_results.pkl',
+            resultfile='/root/autodl-tmp/rpl/raw_decouple_coco_lvis_rp_val.pkl',
             with_avg_pool=True,
             roi_feat_size=7,
             in_channels=2048,
@@ -33,8 +33,8 @@ model = dict(
                 target_stds=[0.1, 0.1, 0.2, 0.2]),
             with_cls=False,
             reg_class_agnostic=True,
-            zeroshot_path='./clip_embeddings/lvis_v0.5_clip_a+cname_rn50_manyprompt.npy',
-            num_classes=1230,
+            zeroshot_path='./clip_embeddings/lvis_v1.0_clip_a+cname_rn50_manyprompt.npy',
+            num_classes=1203,
             loss_cls=dict(type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),
             loss_bbox=dict(type='L1Loss', loss_weight=1.0))),
     # model training and testing settings
@@ -84,14 +84,14 @@ model = dict(
             nms=dict(type='nms', iou_threshold=0.7),
             min_bbox_size=0),
         rcnn=dict(
-            score_thr=0.0001, #5,
+            score_thr=0.0, # 无限制，接受所有检测结果
             nms=dict(type='soft_nms', iou_threshold=0.5, method='gaussian'),
-            max_per_img=300)))
+            max_per_img=1000)))  # 增加到1000，允许更多检测结果
 
 
 # dataset settings
-dataset_type = 'LVISV05Dataset'
-data_root = 'data/lvis_v0.5/'
+dataset_type = 'LVISV1Dataset'
+data_root = '/root/autodl-tmp/datasets/lvis_v1.0/'
 img_norm_cfg = dict(
     mean=[122.7709383, 116.7460125, 104.09373615], std=[68.5005327, 66.6321579, 70.32316305], to_rgb=True)
 train_pipeline = [
@@ -106,7 +106,7 @@ train_pipeline = [
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadProposals', num_max_proposals=100, load_score=True),
+    dict(type='LoadProposals', num_max_proposals=1500, load_score=True),  # 增加到1500，匹配proposal文件中的数量
     dict(
         type='MultiScaleFlipAug',
         img_scale=(1333, 800),
@@ -134,26 +134,26 @@ data = dict(
         oversample_thr=0,
         dataset=dict(
                 type=dataset_type,
-                ann_file=data_root + 'annotations/lvis_v0.5_train.json',
-                img_prefix=data_root + 'train2017/',
+                ann_file=data_root + 'annotations/lvis_v1_train.1@5.0.json',
+                img_prefix='/root/autodl-tmp/datasets/coco',
                 pipeline=train_pipeline,
                 with_score=False)),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/lvis_v0.5_val.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=data_root + 'annotations/lvis_v1_val.1@4.0.json',
+        img_prefix='/root/autodl-tmp/datasets/coco',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/lvis_v0.5_val.json',
-        img_prefix=data_root + 'val2017/',
-        proposal_file='rp_val_ow.pkl',
+        ann_file=data_root + 'annotations/lvis_v1_val.1@4.0.json',
+        img_prefix='/root/autodl-tmp/datasets/coco',
+        proposal_file='/root/autodl-tmp/rpl/decouple_coco_lvis_rp_val.pkl',
         pipeline=test_pipeline))
 
-evaluation = dict(interval=1, metric='bbox')
+evaluation = dict(interval=2, metric='bbox')
 
 # optimizer
-optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001, paramwise_cfg=dict(custom_keys={'backbone': dict(lr_mult=0.1, decay_mult=1.0), 'roi_head':dict(lr_mult=0.1, decay_mult=1.0)  }) )
+optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001, paramwise_cfg=dict(custom_keys={'backbone': dict(lr_mult=0.1, decay_mult=1.0), 'roi_head':dict(lr_mult=0.1, decay_mult=1.0)  }) )
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 
 # learning policy
@@ -163,7 +163,7 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
-    step=[8, 11])
+    step=[3, 4])
 # runtime settings
 runner = dict(
-    type='EpochBasedRunner', max_epochs=12)  # actual epoch = 4 * 3 = 12
+    type='EpochBasedRunner', max_epochs=4)  # actual epoch = 4 * 3 = 12

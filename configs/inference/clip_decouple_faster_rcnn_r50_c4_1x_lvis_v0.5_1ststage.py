@@ -134,8 +134,8 @@ model = dict(
 
 # Dataset
 # dataset settings
-dataset_type = 'LVISV05Dataset'
-data_root = 'data/lvis_v0.5/'
+dataset_type = 'LVISV1Dataset'
+data_root = '/root/autodl-tmp/datasets/lvis_v1.0/'
 img_norm_cfg = dict(
     mean=[122.7709383, 116.7460125, 104.09373615], std=[68.5005327, 66.6321579, 70.32316305], to_rgb=True)
 train_pipeline = [
@@ -172,24 +172,26 @@ data = dict(
         oversample_thr=0,
         dataset=dict(
                 type=dataset_type,
-                ann_file=data_root + 'annotations/lvis_v0.5_train.json',
-                img_prefix=data_root + 'train2017/',
+                ann_file=data_root + 'annotations/lvis_v1_train.1@5.0.json',
+                img_prefix='/root/autodl-tmp/datasets/coco',
                 pipeline=train_pipeline,
                 with_score=False)),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/lvis_v0.5_val.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=data_root + 'annotations/lvis_v1_val.1@4.0.json',
+        img_prefix='/root/autodl-tmp/datasets/coco',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/lvis_v0.5_val.json',
-        img_prefix=data_root + 'val2017/',
+        # ann_file=data_root + 'annotations/lvis_v1_train.1@5.0.json',
+        # img_prefix='/root/autodl-tmp/datasets/coco',
+        ann_file=data_root + 'annotations/lvis_v1_val.1@4.0.json',
+        img_prefix='/root/autodl-tmp/datasets/coco',
         pipeline=test_pipeline))
 
-evaluation = dict(interval=20, metric='bbox')
-optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
-optimizer_config = dict(grad_clip=None)
+evaluation = dict(interval=10, metric='bbox')
+optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)
+optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 
 
 lr_config = dict(
@@ -197,8 +199,10 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
-    step=[8, 11])
-total_epochs = 12
+    step=[3, 4])
+# total_epochs = 4
+runner = dict(
+    type='EpochBasedRunner', max_epochs=4) 
 
 checkpoint_config = dict(interval=1)
 # yapf:disable

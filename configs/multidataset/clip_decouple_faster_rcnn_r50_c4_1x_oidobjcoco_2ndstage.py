@@ -179,10 +179,10 @@ data = dict(
         pipeline=test_pipeline,
         proposal_file='rp_val.pkl'
         ))
-evaluation = dict(interval=1, metric='bbox')
+evaluation = dict(interval=2, metric='bbox')
 
 # optimizer
-optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001, paramwise_cfg=dict(custom_keys={'backbone': dict(lr_mult=0.1, decay_mult=1.0), 'roi_head':dict(lr_mult=0.1, decay_mult=1.0)  }) )
+optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001, paramwise_cfg=dict(custom_keys={'backbone': dict(lr_mult=0.1, decay_mult=1.0), 'roi_head':dict(lr_mult=0.1, decay_mult=1.0)  }) )
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 
 
@@ -191,11 +191,11 @@ optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 lr_config = dict(
     policy='step', 
     warmup='linear',
-    warmup_iters=500,
+    warmup_iters=1000,
     warmup_ratio=0.001,
-    step=[8, 11])
+    step=[2, 3])
 # runtime settings
 runner = dict(
-    type='EpochBasedRunner', max_epochs=12) 
+    type='EpochBasedRunner', max_epochs=4) 
 
 # fp16 = dict(loss_scale=32.)
