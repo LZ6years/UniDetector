@@ -115,7 +115,7 @@ class CLIPBBoxHead(nn.Module):
         x = self.avg_pool(x)
         
         # 展平特征
-        x = x.view(x.size(0), -1)
+        x = x.view(x.shape[0], -1)
         
         # 特征投影
         x = self.fc(x)
@@ -133,7 +133,7 @@ class CLIPBBoxHead(nn.Module):
         cls_scores = self.calibrate_scores(cls_scores)
         
         # 边界框回归（简化版本）
-        bbox_preds = jt.zeros((x.size(0), self.num_classes * 4))
+        bbox_preds = jt.zeros((x.shape[0], self.num_classes * 4))
         
         return cls_scores, bbox_preds
 

@@ -55,15 +55,15 @@ def adjust_learning_rate(optimizer, epoch, lr, schedule):
 def accuracy(output, target, topk=(1,)):
     """计算top-k准确率"""
     maxk = max(topk)
-    batch_size = target.size(0)
+    batch_size = target.shape[0]
     
     _, pred = output.topk(maxk, 1, True, True)
     pred = pred.t()
-    correct = pred.eq(target.view(1, -1).expand_as(pred))
+    correct = pred.eq(target.reshape(1, -1).expand_as(pred))
     
     res = []
     for k in topk:
-        correct_k = correct[:k].view(-1).float().sum(0)
+        correct_k = correct[:k].reshape(-1).float().sum(0)
         res.append(correct_k.mul_(100.0 / batch_size))
     return res
 

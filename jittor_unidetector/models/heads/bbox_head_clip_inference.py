@@ -143,7 +143,7 @@ class BBoxHeadCLIPInference(nn.Module):
         x = self.avg_pool(x)
         
         # 展平特征
-        x = x.view(x.size(0), -1)
+        x = x.view(x.shape[0], -1)
         
         # 特征投影
         x = self.fc(x)
@@ -205,10 +205,10 @@ class BBoxHeadCLIPInference(nn.Module):
             bboxes[:, [1, 3]].clamp_(min=0, max=img_shape[0])
         
         # 缩放回原始图像尺寸
-        if rescale and bboxes.size(0) > 0:
+        if rescale and bboxes.shape[0] > 0:
             scale_factor = jt.array(scale_factor)
-            bboxes = (bboxes.view(bboxes.size(0), -1, 4) / scale_factor).view(
-                bboxes.size()[0], -1)
+            bboxes = (bboxes.view(bboxes.shape[0], -1, 4) / scale_factor).view(
+                bboxes.shape[0], -1)
         
         if cfg is None:
             return bboxes, scores

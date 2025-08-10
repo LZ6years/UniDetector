@@ -89,7 +89,7 @@ class BBoxHead(nn.Module):
         if self.with_avg_pool:
             x = self.avg_pool(x)
         
-        x = x.view(x.size(0), -1)
+        x = x.view(x.shape[0], -1)
         
         cls_score = None
         bbox_pred = None

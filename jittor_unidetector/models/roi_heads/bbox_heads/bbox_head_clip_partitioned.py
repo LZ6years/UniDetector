@@ -96,7 +96,7 @@ class BBoxHeadCLIPPartitioned(BBoxHead):
         """
         if self.with_avg_pool:
             x = self.avg_pool(x)
-        x = x.view(x.size(0), -1)
+        x = x.view(x.shape[0], -1)
         
         # 使用CLIP嵌入进行零样本分类
         if self.zs_weight is not None:
@@ -129,11 +129,11 @@ class BBoxHeadCLIPPartitioned(BBoxHead):
             bg_class_ind = self.num_classes
             pos_inds = (labels >= 0) & (labels < bg_class_ind)
             if pos_inds.sum() > 0:
-                pos_bbox_pred = bbox_pred.reshape(bbox_pred.size(0), 4)[pos_inds]
+                pos_bbox_pred = bbox_pred.reshape(bbox_pred.shape[0], 4)[pos_inds]
                 pos_bbox_targets = bbox_targets[pos_inds]
                 pos_bbox_weights = bbox_weights[pos_inds]
                 losses['loss_bbox'] = self.loss_bbox(
-                    pos_bbox_pred, pos_bbox_targets, pos_bbox_weights, avg_factor=pos_bbox_targets.size(0))
+                    pos_bbox_pred, pos_bbox_targets, pos_bbox_weights, avg_factor=pos_bbox_targets.shape[0])
             else:
                 losses['loss_bbox'] = bbox_pred.sum() * 0
         

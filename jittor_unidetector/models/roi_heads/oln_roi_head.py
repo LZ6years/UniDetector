@@ -31,6 +31,9 @@ class OlnRoIHead(StandardRoIHead):
         Returns:
             losses: 损失字典
         """
+        # 初始化损失字典
+        losses = {}
+        
         # 分配目标
         if self.with_bbox:
             num_imgs = len(img_metas)
