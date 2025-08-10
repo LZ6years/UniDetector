@@ -192,8 +192,8 @@ classes_obj365 = ['Person', 'Sneakers', 'Chair', 'Other Shoes', 'Hat', 'Car', 'L
 
 
 data = dict(
-    samples_per_gpu=4,
-    workers_per_gpu=2,
+    samples_per_gpu=1,  # 减少批次大小以避免显存溢出
+    workers_per_gpu=1,
     train=dict(
         type='ConcatDataset',
         datasets=[

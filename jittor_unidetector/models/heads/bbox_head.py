@@ -120,6 +120,9 @@ class BBoxHead(nn.Module):
         
         if cls_score is not None:
             # 分类损失
+            # 确保label_weights是Jittor张量
+            if not isinstance(label_weights, jt.Var):
+                label_weights = jt.array(label_weights)
             avg_factor = max(jt.sum(label_weights > 0).float().item(), 1.)
             losses['loss_cls'] = self.loss_cls(cls_score, labels, weight=label_weights, avg_factor=avg_factor)
             
