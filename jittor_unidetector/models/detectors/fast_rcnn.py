@@ -40,12 +40,12 @@ class FastRCNN(BaseDetector):
     
     def _build_backbone(self, cfg):
         """构建骨干网络"""
-        from models.backbones import build_backbone
+        from ..backbones import build_backbone
         return build_backbone(cfg)
     
     def _build_roi_head(self, cfg):
         """构建RoI头"""
-        from models.roi_heads import build_head
+        from ..heads.roi_heads import build_head
         return build_head(cfg)
     
     def init_weights(self, pretrained=None):

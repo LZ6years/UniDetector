@@ -1,4 +1,4 @@
-from .clip_backbone import CLIPResNet, CLIPResNetFPN
+from .clip_backbone import CLIPResNet
 # from .resnet import ResNet  # 暂时注释
 
 import sys
@@ -12,4 +12,4 @@ def build_backbone(cfg):
     """构建骨干网络"""
     return BACKBONES.build(cfg)
 
-__all__ = ['CLIPResNet', 'CLIPResNetFPN', 'build_backbone'] 
+__all__ = ['CLIPResNet', 'build_backbone'] 

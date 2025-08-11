@@ -26,7 +26,7 @@ def _make_fpn_conv(channels: int, use_bn: bool = False):
 class FPN(nn.Module):
     """Jittor 版 FPN，与 MMDet FPN 接口对齐。
 
-    参数基本与 PyTorch 版一致；未使用的 conv_cfg/norm_cfg/act_cfg 将被忽略，但结构与行为保持一致。
+    参数基本与 PyTorch 版一致；
     """
 
     def __init__(

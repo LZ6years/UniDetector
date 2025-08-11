@@ -1,27 +1,27 @@
 #!/bin/bash
 
-# Simple training script for Object Detection
-echo "Starting training..."
 
-# --resume-from /root/autodl-tmp/log/clip_decouple_faster_rcnn_r50_c4_1x_coco_2ndstage20250804_201104/latest.pth \
-# clip_decouple_faster_rcnn_r50_c4_1x_objcoco_1ststage
 
-# Training command with common parameters
+# Configuration parameters
+CONFIG_FILE="configs/singledataset/clip_decouple_faster_rcnn_r50_c4_1x_coco_1ststage.py"
+CHECKPOINT_PATH="/root/UniDetector/regionclip_pretrained-cc_rn50_mmdet.pth"
+NUM_GPUS=1
+WORK_DIR="/root/autodl-tmp/log/clip_decouple_faster_rcnn_r50_c4_1x_coco_1ststage$(date +%Y%m%d_%H%M%S)"
+EPOCHS=4
+BATCH_SIZE=2
+LEARNING_RATE=0.005
+
+# --resume-from /root/autodl-tmp/log/clip_end2end_faster_rcnn_r50_c4_1x_lvis_v0.520250806_133351/latest.pth \
+ 
+# Training command for region proposal stage (CLN model)
 tools/dist_train.sh \
-    configs/inference/clip_end2end_faster_rcnn_r50_c4_1x_lvis_v0.5.py \
-    1 \
-    --work-dir /root/autodl-tmp/log/clip_end2end_faster_rcnn_r50_c4_1x_lvis_v0.5$(date +%Y%m%d_%H%M%S) \
-    --resume-from /root/autodl-tmp/log/clip_end2end_faster_rcnn_r50_c4_1x_lvis_v0.520250806_133351/latest.pth \
+    $CONFIG_FILE \
+    $NUM_GPUS \
+    --work-dir $WORK_DIR \
     --cfg-options \
-        load_from=/root/UniDetector/regionclip_pretrained-cc_rn50_mmdet.pth \
-        runner.max_epochs=4 \
-        data.samples_per_gpu=2 \
-        optimizer.lr=0.005 \
+        load-from $CHECKPOINT_PATH \
+        runner.max_epochs=$EPOCHS \
+        data.samples_per_gpu=$BATCH_SIZE \
+        optimizer.lr=$LEARNING_RATE \
         log_config.interval=50 \
-        checkpoint_config.interval=2 \
-        seed=1 \
-        lr_config.warmup_iters=500 \
-        lr_config.warmup_ratio=0.001 \
         lr_config.step="[3,4]"
-
-echo "Training completed!" 

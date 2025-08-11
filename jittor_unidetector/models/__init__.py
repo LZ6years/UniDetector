@@ -1,7 +1,6 @@
 from .detectors import *
 from .backbones import *
 from .heads import *
-from .roi_heads import *
 from .necks import *
 
 __all__ = [
@@ -11,7 +10,7 @@ __all__ = [
     'CLIPResNet', 'CLIPResNetFPN', 'build_backbone',
     # Heads
     'RPNHead', 'BBoxHead', 'CLIPBBoxHead', 'CLIPFeatureExtractor', 'BBoxHeadCLIPInference', 'build_head',
-    # ROI Heads
+    # ROI Heads (现在在heads下面)
     'OlnRoIHead', 'build_head',
     # Necks
     'build_neck'

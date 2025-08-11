@@ -4,8 +4,8 @@ setup(
     name="jittor-unidetector",
     version="0.1.0",
     description="Jittor implementation of UniDetector for universal object detection",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="LZ6years",
+    author_email="lz6year3915@gmail.com",
     packages=find_packages(),
     install_requires=[
         "jittor>=1.3.8",

@@ -6,7 +6,7 @@ import os
 # 添加UniDetector的mmdet路径
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../../../../..'))
 from mmdet.models.builder import HEADS
-from models.heads.bbox_head import BBoxHead
+from ...bbox_head import BBoxHead
 
 @HEADS.register_module(force=True)
 class Shared2FCBBoxScoreHead(BBoxHead):

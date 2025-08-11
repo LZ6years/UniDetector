@@ -2,7 +2,7 @@ import jittor as jt
 import jittor.nn as nn
 
 class BaseDetector(nn.Module):
-    """检测器基类"""
+    """检测器接口"""
     
     def __init__(self):
         super(BaseDetector, self).__init__()

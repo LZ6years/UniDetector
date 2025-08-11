@@ -54,22 +54,22 @@ class FasterRCNN(BaseDetector):
     
     def _build_backbone(self, cfg):
         """构建骨干网络"""
-        from models.backbones import build_backbone
+        from ..backbones import build_backbone
         return build_backbone(cfg)
     
     def _build_neck(self, cfg):
         """构建颈部网络"""
-        from models.necks import build_neck
+        from ..necks import build_neck
         return build_neck(cfg)
     
     def _build_rpn_head(self, cfg):
         """构建RPN头"""
-        from models.heads import build_head
+        from ..heads import build_head
         return build_head(cfg)
     
     def _build_roi_head(self, cfg):
         """构建RoI头"""
-        from models.roi_heads import build_head
+        from ..heads.roi_heads import build_head
         return build_head(cfg)
     
     def init_weights(self, pretrained=None):

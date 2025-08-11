@@ -1,5 +1,4 @@
 from .faster_rcnn import FasterRCNN
-from .cln_network import CLNNetwork
 
 import sys
 import os
@@ -12,4 +11,4 @@ def build_detector(cfg, train_cfg=None, test_cfg=None):
     """构建检测器"""
     return DETECTORS.build(cfg, default_args=dict(train_cfg=train_cfg, test_cfg=test_cfg))
 
-__all__ = ['FasterRCNN', 'CLNNetwork', 'build_detector'] 
+__all__ = ['FasterRCNN', 'build_detector'] 
