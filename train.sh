@@ -19,7 +19,7 @@ tools/dist_train.sh \
     $NUM_GPUS \
     --work-dir $WORK_DIR \
     --cfg-options \
-        load-from $CHECKPOINT_PATH \
+        load_from=$CHECKPOINT_PATH \
         runner.max_epochs=$EPOCHS \
         data.samples_per_gpu=$BATCH_SIZE \
         optimizer.lr=$LEARNING_RATE \
